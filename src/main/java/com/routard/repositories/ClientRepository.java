@@ -6,4 +6,8 @@ import jakarta.enterprise.context.RequestScoped;
 
 @RequestScoped
 public class ClientRepository implements PanacheRepositoryBase<ClientEntity, Integer> {
+
+    public ClientEntity findByNomClient(String nomClient) {
+        return null;
+    }
 }

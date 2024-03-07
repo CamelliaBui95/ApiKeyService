@@ -8,7 +8,10 @@ public class Argon2 {
     private static final int ITERATIONS = 10;
     private static final int MEMORY = 2 ^ 24;
     private static final int PARALLELISM = 1;
-    private static final String SUFFIX = "$argon2id$v=19$m=26,t=10,p=1$";
+    private static final String SUFFIX = "$argon2id$v=19$m=" + MEMORY +
+            ",t=" + ITERATIONS +
+            ",p=" + PARALLELISM +
+            "$";
 
     private Argon2() {
 

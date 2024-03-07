@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Fetch;
 
 import java.time.LocalDate;
 
@@ -34,5 +33,5 @@ public class MailHistoryEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="ID_CLIENT")
-    private ClientEntity client;
+    private ClientEntity clientEntity;
 }
