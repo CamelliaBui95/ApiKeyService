@@ -33,7 +33,7 @@ public class ClientEntity {
     private String cle;
 
     @Column(name = "QUOTA_MENSUEL")
-    private int quotaMensuel;
+    private int quotaMensuel; //quota = 0 quand c'est illimité.
 
     @Column(name="DATE_CREE")
     private LocalDate dateCreation;
@@ -44,23 +44,28 @@ public class ClientEntity {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "clientEntity")
     private List<MailHistoryEntity> mailHistory;
 
-    private final static Integer KEY_LENGTH = 16;
+    public static final Integer QUOTA_DEFAUT = 5;
 
+    public ClientEntity(String nomClient, String email){
+        this.nomClient=nomClient;
+        this.email=email;
+        this.quotaMensuel = QUOTA_DEFAUT;
+        this.dateCreation = LocalDate.now();
+        this.statut = "active";
+    }
     public ClientEntity(String nomClient, String email, Integer quota) {
-        ClientEntity clientEntity = new ClientEntity();
         if (!nomClient.isEmpty())
             this.nomClient = nomClient;
         if (!email.isEmpty())
             this.email = email;
-        this.cle = generateKey(nomClient);
         this.quotaMensuel = quota;
         this.dateCreation = LocalDate.now();
-        this.statut = "activated";
+        this.statut = "active";
     }
 
     public String generateKey(String nomClient){
         String nomClientHashed = Argon2.getHashedKey(nomClient);
-        System.out.println(nomClient + " : " + nomClientHashed.substring(KEY_LENGTH));
-        return nomClientHashed.substring(KEY_LENGTH);
+//        System.out.println(nomClient + " : " + nomClientHashed);
+        return nomClientHashed;
     }
 }

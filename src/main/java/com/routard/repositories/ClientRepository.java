@@ -8,6 +8,19 @@ import jakarta.enterprise.context.RequestScoped;
 public class ClientRepository implements PanacheRepositoryBase<ClientEntity, Integer> {
 
     public ClientEntity findByNomClient(String nomClient) {
-        return null;
+        return find("nomClient=?1", nomClient).firstResult();
     }
+    public ClientEntity findByCle(String apiKey) {
+        return find("cle=?1", apiKey).firstResult();
+    }
+
+    public boolean isValideNomClient(String nomClient) {
+        ClientEntity clientEntity = findByNomClient(nomClient);
+        return clientEntity != null;
+    }
+    public boolean isValideCle(String apiKey) {
+        ClientEntity clientEntity = findByCle(apiKey);
+        return clientEntity != null;
+    }
+
 }

@@ -4,7 +4,7 @@ import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 
 public class Argon2 {
     private static final int SALT_LENGTH = 16;
-    private static final int KEY_LENGTH = 64;
+    private static final int KEY_LENGTH = 16;
     private static final int ITERATIONS = 10;
     private static final int MEMORY = 2 ^ 24;
     private static final int PARALLELISM = 1;
