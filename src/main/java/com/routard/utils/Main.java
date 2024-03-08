@@ -5,6 +5,6 @@ public class Main {
         String client = "routard";
 
         String apiKey = Argon2.getHashedKey(client);
-        System.out.println(apiKey);
+        System.out.println(apiKey + " lengh="+apiKey.length());
     }
 }

@@ -44,6 +44,7 @@ public class ClientEntity {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "clientEntity")
     private List<MailHistoryEntity> mailHistory;
 
+    public static final Integer KEY_LENGH = 16;
     public static final Integer QUOTA_DEFAUT = 5;
 
     public ClientEntity(String nomClient, String email){
@@ -65,7 +66,8 @@ public class ClientEntity {
 
     public String generateKey(String nomClient){
         String nomClientHashed = Argon2.getHashedKey(nomClient);
+        String apiKey = nomClientHashed.substring(0, KEY_LENGH);
 //        System.out.println(nomClient + " : " + nomClientHashed);
-        return nomClientHashed;
+        return apiKey;
     }
 }

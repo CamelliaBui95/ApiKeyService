@@ -52,14 +52,16 @@ public class ClientDTO {
         dateCreation = clientEntity.getDateCreation();
         statut = clientEntity.getStatut();
         mails = new ArrayList<>();
-        for (MailHistoryEntity mail:clientEntity.getMailHistory()) {
-            ClientDTOMail clientDTOMail = new ClientDTOMail();
-            clientDTOMail.id = mail.getId();
-            clientDTOMail.dateEnvoi = mail.getDateEnvoi();
-            clientDTOMail.heureEnvoi = mail.getHeureEnvoi();
-            clientDTOMail.destinataire = mail.getDestinataire();
-            clientDTOMail.objetMail = mail.getObjetMail();
-            mails.add(clientDTOMail);
+        if (clientEntity.getMailHistory() != null) {
+            for (MailHistoryEntity mail : clientEntity.getMailHistory()) {
+                ClientDTOMail clientDTOMail = new ClientDTOMail();
+                clientDTOMail.id = mail.getId();
+                clientDTOMail.dateEnvoi = mail.getDateEnvoi();
+                clientDTOMail.heureEnvoi = mail.getHeureEnvoi();
+                clientDTOMail.destinataire = mail.getDestinataire();
+                clientDTOMail.objetMail = mail.getObjetMail();
+                mails.add(clientDTOMail);
+            }
         }
     }
 

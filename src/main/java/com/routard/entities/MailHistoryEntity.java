@@ -17,6 +17,7 @@ import java.time.LocalDate;
 public class MailHistoryEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID_MAIL")
     private Integer id;
 
     @Column(name = "OBJET")

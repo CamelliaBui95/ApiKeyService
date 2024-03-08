@@ -14,11 +14,11 @@ public class ClientRepository implements PanacheRepositoryBase<ClientEntity, Int
         return find("cle=?1", apiKey).firstResult();
     }
 
-    public boolean isValideNomClient(String nomClient) {
+    public boolean isExistingNomClient(String nomClient) {
         ClientEntity clientEntity = findByNomClient(nomClient);
         return clientEntity != null;
     }
-    public boolean isValideCle(String apiKey) {
+    public boolean isExistingCle(String apiKey) {
         ClientEntity clientEntity = findByCle(apiKey);
         return clientEntity != null;
     }
