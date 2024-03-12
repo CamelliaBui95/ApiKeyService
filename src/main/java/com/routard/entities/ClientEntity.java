@@ -7,8 +7,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Base64;
 import java.util.List;
 
 @Data
@@ -36,7 +38,7 @@ public class ClientEntity {
     private int quotaMensuel; //quota = 0 quand c'est illimité.
 
     @Column(name="DATE_CREE")
-    private LocalDate dateCreation;
+    private LocalDateTime dateCreation;
 
     @Column(name="STATUT")
     private String statut;
@@ -51,7 +53,7 @@ public class ClientEntity {
         this.nomClient=nomClient;
         this.email=email;
         this.quotaMensuel = QUOTA_DEFAUT;
-        this.dateCreation = LocalDate.now();
+        this.dateCreation = LocalDateTime.now();
         this.statut = "active";
     }
     public ClientEntity(String nomClient, String email, Integer quota) {
@@ -60,14 +62,14 @@ public class ClientEntity {
         if (!email.isEmpty())
             this.email = email;
         this.quotaMensuel = quota;
-        this.dateCreation = LocalDate.now();
+        this.dateCreation = LocalDateTime.now();
         this.statut = "active";
     }
 
     public String generateKey(String nomClient){
         String nomClientHashed = Argon2.getHashedKey(nomClient);
-        String apiKey = nomClientHashed.substring(0, KEY_LENGH);
-//        System.out.println(nomClient + " : " + nomClientHashed);
+        String nomClientHashedEncoded = new String(Base64.getUrlEncoder().encode(nomClientHashed.getBytes(StandardCharsets.UTF_8)));
+        String apiKey = nomClientHashedEncoded.substring(0, KEY_LENGH);
         return apiKey;
     }
 }

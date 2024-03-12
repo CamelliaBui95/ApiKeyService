@@ -1,5 +1,6 @@
 package com.routard.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.routard.entities.ClientEntity;
@@ -9,6 +10,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,13 +24,15 @@ public class ClientDTO {
     @JsonProperty(index = 2)
     private String nomClient;
     @JsonProperty(index = 3)
+    @JsonIgnore
     private String email;
     @JsonProperty(index = 4)
     private String cle;
     @JsonProperty(index = 5)
     private int quotaMensuel;
     @JsonProperty(index = 6)
-    private LocalDate dateCreation;
+    @JsonIgnore
+    private LocalDateTime dateCreation;
     @JsonProperty(index = 7)
     private String statut;
     @JsonProperty(index = 8)
@@ -38,7 +43,7 @@ public class ClientDTO {
     class ClientDTOMail {
         Integer id;
         LocalDate dateEnvoi;
-        LocalDate heureEnvoi;
+        LocalTime heureEnvoi;
         String destinataire;
         String objetMail;
     }

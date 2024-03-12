@@ -13,6 +13,10 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.*;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+
 @Path("/apiKey/")
 @Tag(name = "ApiKey")
 @Produces(MediaType.APPLICATION_JSON)
@@ -21,9 +25,9 @@ public class ApiKeyResource {
     @Context
     UriInfo uriInfo;
     @Inject
-    private ClientRepository clientRepository;
+    ClientRepository clientRepository;
     @Inject
-    private MailHistoryRepository mailHistoryRepository;
+    MailHistoryRepository mailHistoryRepository;
     @GET
     @Path("{apiKey}")
     public Response getClientByApiKey(@PathParam("apiKey") String apiKey) {
@@ -37,7 +41,7 @@ public class ApiKeyResource {
     }
 
     @GET
-    @Path("/mailCount/{apiKey}")
+    @Path("/{apiKey}/mailCount")
     public Response getMailCount(@PathParam("apiKey") String apiKey) {
         if (apiKey == null)
             return Response.status(Response.Status.BAD_REQUEST).build();
@@ -45,7 +49,7 @@ public class ApiKeyResource {
         if (clientEntity == null)
             return Response.status(Response.Status.NOT_FOUND).build();
 
-        Long mailCount = MailHistoryRepository.getMailCount(clientEntity.getId());
+        Long mailCount = mailHistoryRepository.getMailCount(clientEntity.getId());
         return Response.ok(mailCount).build();
     }
 
@@ -62,6 +66,12 @@ public class ApiKeyResource {
         mailHistoryEntity.setObjetMail(mailClient.getSubject());
         mailHistoryEntity.setDestinataire(mailClient.getRecipient());
         mailHistoryEntity.setClientEntity(clientEntity);
+
+        LocalDate date = LocalDate.now();
+        LocalDateTime time = LocalDateTime.now();
+        LocalTime heure = time.toLocalTime();
+        mailHistoryEntity.setDateEnvoi(date);
+        mailHistoryEntity.setHeureEnvoi(heure);
 
         mailHistoryRepository.persist(mailHistoryEntity);
 

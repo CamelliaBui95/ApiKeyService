@@ -2,6 +2,7 @@ package com.routard.resources;
 
 import com.routard.dto.ClientDTO;
 import com.routard.dto.ClientToCreateDTO;
+import com.routard.dto.MailClient;
 import com.routard.entities.ClientEntity;
 import com.routard.repositories.ClientRepository;
 import com.routard.services.MailService;
@@ -28,6 +29,8 @@ public class ClientResource {
     @Inject
     private ClientRepository clientRepository;
 
+    private static final String ApiKeyService_KEY = "Q3pzZDlNQVk1MHFD";
+
     @GET
     @Operation(summary = "All clients", description = "List of all clients")
     public Response getAll() {
@@ -52,12 +55,32 @@ public class ClientResource {
                 apiKey = clientEntity.generateKey(client.getNomClient());
             }
             clientEntity.setCle(apiKey);
-            clientRepository.persist(clientEntity);
+
+            MailClient mailClient= MailClient.builder()
+                    .recipient(clientEntity.getEmail())
+                    .subject("Votre compte client a été créé")
+                    .content("Bonjour "+ clientEntity.getNomClient() + " !\nVotre ApiKey personnelle et confidencielle : " + clientEntity.getCle())
+                    .build();
+
+            try{
+                mailService.send(ApiKeyService_KEY, mailClient);
+            }catch (Exception e) {
+                e.printStackTrace();
+                return Response.ok("Erreur d'envoi d'email.", MediaType.TEXT_PLAIN).status(Response.Status.SERVICE_UNAVAILABLE).build();
+            }
+
+            try{
+                clientRepository.persist(clientEntity);
+            }catch (Exception e) {
+                e.printStackTrace();
+                return Response.ok("Création échouée !", MediaType.TEXT_PLAIN).status(Response.Status.INTERNAL_SERVER_ERROR).build();
+            }
+
             System.out.println(clientEntity.getNomClient() + " : " + clientEntity.getCle() + " lengh="+ clientEntity.getCle().length());
-            //TODO sendMail
+
             UriBuilder uriBuilder = uriInfo.getRequestUriBuilder();
             uriBuilder.path(clientEntity.getId().toString());
-            return Response.created(uriBuilder.build()).entity(new ClientDTO(clientEntity)).build();
+            return Response.ok("Votre compte client a été créé.", MediaType.TEXT_PLAIN).status(Response.Status.CREATED).build();
         } else {
             return Response.status(Response.Status.CONFLICT).build();
         }
@@ -79,7 +102,22 @@ public class ClientResource {
             return Response.status(Response.Status.NOT_FOUND).build();
 
         savedClientEntity.setQuotaMensuel(quota);
-        return Response.ok(new ClientDTO(savedClientEntity)).build();
+
+        MailClient mailClient= MailClient.builder()
+                .recipient(savedClientEntity.getEmail())
+                .subject("Votre quota mensuel a été mis à jour")
+                .content("Bonjour "+ savedClientEntity.getNomClient() + " !\nVotre nouveau quota mensuel : " + savedClientEntity.getQuotaMensuel())
+                .build();
+
+        try{
+            mailService.send(ApiKeyService_KEY, mailClient);
+        }catch (Exception e) {
+            e.printStackTrace();
+            return Response.ok("Erreur d'envoi d'email.", MediaType.TEXT_PLAIN).status(Response.Status.SERVICE_UNAVAILABLE).build();
+        }
+
+        return Response.ok("Votre nouveau quota"+savedClientEntity.getQuotaMensuel(), MediaType.TEXT_PLAIN).status(Response.Status.OK).build();
+//        return Response.ok(new ClientDTO(savedClientEntity)).build();
     }
 
     @Transactional
@@ -101,11 +139,26 @@ public class ClientResource {
             newKey = savedClientEntity.generateKey(savedClientEntity.getNomClient());
         }
         savedClientEntity.setCle(newKey);
-        //TODO sendMail
+
+        MailClient mailClient= MailClient.builder()
+                .recipient(savedClientEntity.getEmail())
+                .subject("Votre nouvelle ApiKey")
+                .content("Bonjour "+ savedClientEntity.getNomClient() + " !\nVotre nouvelle ApiKey personnelle et confidentielle : " + savedClientEntity.getCle())
+                .build();
+
+        try{
+            mailService.send(ApiKeyService_KEY, mailClient);
+        }catch (Exception e) {
+            e.printStackTrace();
+            return Response.ok("Erreur d'envoi d'email.", MediaType.TEXT_PLAIN).status(Response.Status.SERVICE_UNAVAILABLE).build();
+        }
+
 /*        UriBuilder uriBuilder = uriInfo.getRequestUriBuilder();
         uriBuilder.path(savedClientEntity.getId().toString());
         uriBuilder.path(newKey);*/
-        return Response.ok(new ClientDTO(savedClientEntity)).build();
+
+        return Response.ok("Une nouvelle ApiKey vous a été envoyé.", MediaType.TEXT_PLAIN).status(Response.Status.OK).build();
+//        return Response.ok(new ClientDTO(savedClientEntity)).build();
     }
 
 }

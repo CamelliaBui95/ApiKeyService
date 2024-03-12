@@ -2,9 +2,11 @@ package com.routard.repositories;
 
 import com.routard.entities.MailHistoryEntity;
 import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
+import jakarta.enterprise.context.RequestScoped;
 
 import java.time.LocalDate;
 
+@RequestScoped
 public class MailHistoryRepository implements PanacheRepositoryBase<MailHistoryEntity, Integer> {
     public Long getMailCount(Integer id) {
         if (id==null) return null;

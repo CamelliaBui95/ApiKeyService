@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,7 +25,7 @@ public class MailHistoryDTO {
     @JsonProperty(index = 4)
     private LocalDate dateEnvoi;
     @JsonProperty(index = 5)
-    private LocalDate heureEnvoi;
+    private LocalTime heureEnvoi;
     @JsonProperty(index = 6)
     private MailHistoryDTOClient client;
 //    private ClientDTO clientDTO;

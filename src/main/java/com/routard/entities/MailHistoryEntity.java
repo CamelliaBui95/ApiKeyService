@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Data
 @NoArgsConstructor
@@ -30,7 +31,7 @@ public class MailHistoryEntity {
     private LocalDate dateEnvoi;
 
     @Column(name = "HEURE_ENVOI")
-    private LocalDate heureEnvoi;
+    private LocalTime heureEnvoi;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="ID_CLIENT")
