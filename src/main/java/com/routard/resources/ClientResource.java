@@ -4,6 +4,8 @@ import com.routard.dto.ClientDTO;
 import com.routard.dto.ClientToCreateDTO;
 import com.routard.entities.ClientEntity;
 import com.routard.repositories.ClientRepository;
+import com.routard.services.MailService;
+import io.quarkus.mailer.Mailer;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
@@ -11,6 +13,7 @@ import jakarta.ws.rs.core.*;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
+import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 import java.util.List;
 
@@ -18,6 +21,10 @@ import java.util.List;
 @Tag(name = "Client")
 @Produces(MediaType.APPLICATION_JSON)
 public class ClientResource {
+    @Inject
+    @RestClient
+    MailService mailService;
+
     @Inject
     private ClientRepository clientRepository;
 
