@@ -17,6 +17,7 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 @Path("/clients/")
 @Tag(name = "Client")
@@ -36,6 +37,16 @@ public class ClientResource {
     public Response getAll() {
         List<ClientEntity> clientEntityList = clientRepository.listAll();
         return Response.ok(ClientDTO.toDTOList(clientEntityList)).build();
+    }
+
+    @GET
+    @Path("{id}")
+    @Operation(summary = "Find client by id", description = "Find a client with this id")
+    public Response getById(@PathParam(value = "id") Integer id){
+        ClientEntity clientEntity = clientRepository.findById(id);
+        if (clientEntity == null)
+            return Response.ok("This client does not exist.", MediaType.TEXT_PLAIN).status(Response.Status.NOT_FOUND).build();
+        return Response.ok(new ClientDTO(clientEntity)).build();
     }
 
     @Transactional
@@ -131,8 +142,12 @@ public class ClientResource {
             return Response.status(Response.Status.BAD_REQUEST).build();
 
         ClientEntity savedClientEntity = clientRepository.findById(id);
+
         if (savedClientEntity == null)
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return Response.ok("This client does not exist.", MediaType.TEXT_PLAIN).status(Response.Status.NOT_FOUND).build();
+
+        if (!savedClientEntity.getStatut().equalsIgnoreCase("active"))
+            return Response.ok("This account is not active.", MediaType.TEXT_PLAIN).status(Response.Status.UNAUTHORIZED).build();
 
         String newKey = savedClientEntity.generateKey(savedClientEntity.getNomClient());
         while (clientRepository.isExistingCle(newKey)) {

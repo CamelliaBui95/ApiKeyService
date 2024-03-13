@@ -9,9 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,6 +25,7 @@ public class ClientDTO {
     @JsonIgnore
     private String email;
     @JsonProperty(index = 4)
+    @JsonIgnore
     private String cle;
     @JsonProperty(index = 5)
     private int quotaMensuel;
@@ -42,10 +41,9 @@ public class ClientDTO {
     @Getter
     class ClientDTOMail {
         Integer id;
-        LocalDate dateEnvoi;
-        LocalTime heureEnvoi;
         String destinataire;
         String objetMail;
+        LocalDateTime dateEnvoi;
     }
 
     public ClientDTO(ClientEntity clientEntity) {
@@ -61,10 +59,9 @@ public class ClientDTO {
             for (MailHistoryEntity mail : clientEntity.getMailHistory()) {
                 ClientDTOMail clientDTOMail = new ClientDTOMail();
                 clientDTOMail.id = mail.getId();
-                clientDTOMail.dateEnvoi = mail.getDateEnvoi();
-                clientDTOMail.heureEnvoi = mail.getHeureEnvoi();
                 clientDTOMail.destinataire = mail.getDestinataire();
                 clientDTOMail.objetMail = mail.getObjetMail();
+                clientDTOMail.dateEnvoi = mail.getDateEnvoi();
                 mails.add(clientDTOMail);
             }
         }
