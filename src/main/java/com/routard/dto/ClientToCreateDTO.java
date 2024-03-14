@@ -1,6 +1,7 @@
 package com.routard.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.routard.utils.Validator;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,4 +16,12 @@ public class ClientToCreateDTO {
     private String nomClient;
     @JsonProperty(index = 3)
     private String adresseMail;
+
+    public boolean isValidClientToCreate() {
+        if (Validator.isValidEmailAddress(adresseMail)) {
+            return !nomClient.equalsIgnoreCase(adresseMail);
+        }
+        return false;
+    }
+
 }
