@@ -26,7 +26,7 @@ public class MailHistoryDTO {
     private MailHistoryDTOClient client;
 
     @Getter
-    class MailHistoryDTOClient {
+    public class MailHistoryDTOClient {
         Integer id;
         String nom;
     }

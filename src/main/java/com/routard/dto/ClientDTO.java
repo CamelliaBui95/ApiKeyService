@@ -39,7 +39,7 @@ public class ClientDTO {
     private List<ClientDTOMail> mails;
 
     @Getter
-    class ClientDTOMail {
+    public class ClientDTOMail {
         Integer id;
         String destinataire;
         String objetMail;
@@ -67,6 +67,26 @@ public class ClientDTO {
         }
     }
 
+    public ClientDTO(ClientEntity clientEntity, boolean isWithMails) {
+        id = clientEntity.getId();
+        nomClient = clientEntity.getNomClient();
+        email = clientEntity.getEmail();
+        cle = clientEntity.getCle();
+        quotaMensuel = clientEntity.getQuotaMensuel();
+        dateCreation = clientEntity.getDateCreation();
+        statut = clientEntity.getStatut();
+        mails = new ArrayList<>();
+        /*if (clientEntity.getMailHistory() != null) {
+            for (MailHistoryEntity mail : clientEntity.getMailHistory()) {
+                ClientDTOMail clientDTOMail = new ClientDTOMail();
+                clientDTOMail.id = mail.getId();
+                clientDTOMail.destinataire = mail.getDestinataire();
+                clientDTOMail.objetMail = mail.getObjetMail();
+                clientDTOMail.dateEnvoi = mail.getDateEnvoi();
+                mails.add(clientDTOMail);
+            }
+        }*/
+    }
     public static List<ClientDTO> toDTOList(List<ClientEntity> clientEntities) {
         List<ClientDTO> clientDTOList = new ArrayList<>();
         for (ClientEntity clientEntity: clientEntities)

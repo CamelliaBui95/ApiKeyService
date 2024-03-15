@@ -105,7 +105,7 @@ public class ClientResource {
     @PUT
     @Operation(summary = "Update quota", description = "Assign new quota to a client")
     @Consumes(MediaType.TEXT_PLAIN)
-    @Path("{id}")
+    @Path("{id}/newQuota")
     public Response updateQuota(@PathParam("id") Integer id, Integer quota) {
         if (id == null || quota == null)
             return Response.status(Response.Status.BAD_REQUEST).build();

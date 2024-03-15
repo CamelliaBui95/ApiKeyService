@@ -32,41 +32,49 @@ public class ApiKeyResource {
     @GET
     @Operation(summary = "Find client by ApiKey", description = "Find the client with this ApiKey.")
     @Path("{apiKey}")
-    public Response getClientByApiKey(@PathParam(value = "apiKey") String apiKey) {
+    public ClientDTO getClientByApiKey(@PathParam(value = "apiKey") String apiKey) {
         if (apiKey == null || apiKey.trim().isEmpty())
-            return Response.ok("ApiKey required!", MediaType.TEXT_PLAIN).status(Response.Status.NOT_ACCEPTABLE).build();
+            //return Response.ok("ApiKey required!", MediaType.TEXT_PLAIN).status(Response.Status.NOT_ACCEPTABLE).build();
+            return null;
         ClientEntity clientEntity = clientRepository.findByCle(apiKey);
         if (clientEntity == null)
-            return Response.ok("Client account not found.", MediaType.TEXT_PLAIN).status(Response.Status.NOT_FOUND).build();
-        return Response.ok(new ClientDTO(clientEntity)).build();
+            //return Response.ok("Client account not found.", MediaType.TEXT_PLAIN).status(Response.Status.NOT_FOUND).build();
+            return null;
+        //return Response.ok(new ClientDTO(clientEntity)).build();
+            return new ClientDTO(clientEntity);
     }
 
     @GET
     @Operation(summary = "Count mails", description = "Return the quantity of sent mails with this ApiKey.")
     @Path("/{apiKey}/mailCount")
-    public Response getMailCount(@PathParam(value = "apiKey") String apiKey) {
+    public Integer getMailCount(@PathParam(value = "apiKey") String apiKey) {
         if (apiKey == null || apiKey.trim().isEmpty())
-            return Response.ok("ApiKey required!", MediaType.TEXT_PLAIN).status(Response.Status.NOT_ACCEPTABLE).build();
+//            return Response.ok("ApiKey required!", MediaType.TEXT_PLAIN).status(Response.Status.NOT_ACCEPTABLE).build();
+            return 0;
         ClientEntity clientEntity = clientRepository.findByCle(apiKey);
         if (clientEntity == null)
-            return Response.ok("Client account not found.", MediaType.TEXT_PLAIN).status(Response.Status.NOT_FOUND).build();
+//            return Response.ok("Client account not found.", MediaType.TEXT_PLAIN).status(Response.Status.NOT_FOUND).build();
+            return 0;
         Integer mailCount = mailHistoryRepository.getMailCount(clientEntity);
-        return Response.ok(String.format("You have already sent %d mails", mailCount)).build();
+//        return Response.ok(String.format("You have already sent %d mails", mailCount)).build();
+        return mailCount;
     }
 
     @Transactional
     @POST
     @Operation(summary = "Record mails", description = "Record an email in database.")
     @Path("{apiKey}/mails")
-    public Response saveMail(@PathParam(value = "apiKey") String apiKey, MailClient mailClient) {
+    public MailHistoryDTO saveMail(@PathParam(value = "apiKey") String apiKey, MailClient mailClient) {
         if (apiKey == null || apiKey.trim().isEmpty())
-            return Response.ok("ApiKey required!", MediaType.TEXT_PLAIN).status(Response.Status.NOT_ACCEPTABLE).build();
-        if ( mailClient == null || mailClient.isValid())
-            return Response.ok("Email address should be valid!", MediaType.TEXT_PLAIN).status(Response.Status.BAD_REQUEST).build();
-
+            //return Response.ok("ApiKey required!", MediaType.TEXT_PLAIN).status(Response.Status.NOT_ACCEPTABLE).build();
+            return null;
+        if ( mailClient == null || !mailClient.isValid())
+            //return Response.ok("Email address should be valid!", MediaType.TEXT_PLAIN).status(Response.Status.BAD_REQUEST).build();
+            return null;
         ClientEntity clientEntity = clientRepository.findByCle(apiKey);
         if (clientEntity == null)
-            return Response.status(Response.Status.NOT_FOUND).build();
+//            return Response.status(Response.Status.NOT_FOUND).build();
+            return null;
         MailHistoryEntity mailHistoryEntity = new MailHistoryEntity();
         mailHistoryEntity.setObjetMail(mailClient.getSubject());
         mailHistoryEntity.setDestinataire(mailClient.getRecipient());
@@ -79,12 +87,14 @@ public class ApiKeyResource {
         mailHistoryRepository.persist(mailHistoryEntity);
         } catch (Exception e) {
             e.printStackTrace();
-            return Response.ok("Recording failed.", MediaType.TEXT_PLAIN).status(Response.Status.INTERNAL_SERVER_ERROR).build();
+            //return Response.ok("Recording failed.", MediaType.TEXT_PLAIN).status(Response.Status.INTERNAL_SERVER_ERROR).build();
+            return null;
 //            throw new RuntimeException(e);
         }
 
         UriBuilder uriBuilder = uriInfo.getRequestUriBuilder();
         uriBuilder.path(apiKey);
-        return Response.created(uriBuilder.build()).entity(new MailHistoryDTO(mailHistoryEntity)).build();
+        //return Response.created(uriBuilder.build()).entity(new MailHistoryDTO(mailHistoryEntity)).build();
+        return (new MailHistoryDTO(mailHistoryEntity));
     }
 }
